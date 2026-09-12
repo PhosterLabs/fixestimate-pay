@@ -18,13 +18,28 @@ const geminiModel = defineString('GEMINI_MODEL', { default: 'gemini-3.7-flash' }
 
 const requestSchema = z.object({
   requestId: z.string().uuid(),
-  category: z.enum(['plumbing', 'electrical', 'hvac', 'roofing', 'general']),
+  category: z.enum(['plumbing', 'electrical', 'gas', 'hvac', 'roofing', 'flooring', 'painting', 'carpentry', 'drywall', 'general']),
   urgency: z.enum(['routine', 'soon', 'urgent']),
   description: z.string().trim().min(20).max(800),
+  details: z.record(z.string().max(40), z.string().trim().max(160)).refine((value) => Object.keys(value).length <= 3, { message: 'Too many follow-up details.' }).optional(),
+  postalPrefix: z.string().regex(/^\d{3}$/).optional(),
   imageDataUrl: z.string().max(5_600_000).optional(),
   walletAddress: z.string().min(20).max(80),
   transactionHash: z.string().min(8).max(160),
 })
+
+const feedbackSchema = z.object({
+  requestId: z.string().uuid(),
+  transactionHash: z.string().regex(/^[a-zA-Z0-9_-]{8,160}$/),
+  helpful: z.boolean().optional(),
+  priceAccuracy: z.enum(['about-right', 'lower-than-expected', 'higher-than-expected']).optional(),
+  resolved: z.boolean().optional(),
+}).refine((value) => value.helpful !== undefined || value.priceAccuracy !== undefined || value.resolved !== undefined, { message: 'Choose at least one feedback option.' })
+
+function originAllowed(origin: string | undefined): boolean {
+  const allowedOrigins = allowedOrigin.value().split(',').map((value) => value.trim()).filter(Boolean)
+  return !allowedOrigins.length || Boolean(origin && allowedOrigins.includes(origin))
+}
 
 const generatedEstimateSchema = z.object({
   title: z.string().min(3).max(100),
@@ -47,9 +62,7 @@ const generatedEstimateSchema = z.object({
 }).refine((value) => value.highEstimate >= value.lowEstimate, { message: 'Invalid estimate range.' })
 
 export const estimate = onRequest({ region: 'us-east1', secrets: [geminiApiKey, nimiqRpcUrl], timeoutSeconds: 60, memory: '512MiB', maxInstances: 5 }, async (request, response) => {
-  const origin = request.get('origin')
-  const allowedOrigins = allowedOrigin.value().split(',').map((value) => value.trim()).filter(Boolean)
-  if (allowedOrigins.length && (!origin || !allowedOrigins.includes(origin))) return void response.status(403).json({ error: 'This origin is not allowed.' })
+  if (!originAllowed(request.get('origin'))) return void response.status(403).json({ error: 'This origin is not allowed.' })
   if (request.method !== 'POST') return void response.status(405).json({ error: 'Method not allowed.' })
 
   const parsed = requestSchema.safeParse(request.body)
@@ -88,4 +101,21 @@ export const estimate = onRequest({ region: 'us-east1', secrets: [geminiApiKey, 
     if (paymentClaimed) await paymentRef.delete().catch(() => undefined)
     response.status(/waiting|confirmed/.test(message) ? 409 : 502).json({ error: message })
   }
+})
+
+export const feedback = onRequest({ region: 'us-east1', timeoutSeconds: 15, memory: '256MiB', maxInstances: 3 }, async (request, response) => {
+  if (!originAllowed(request.get('origin'))) return void response.status(403).json({ error: 'This origin is not allowed.' })
+  if (request.method !== 'POST') return void response.status(405).json({ error: 'Method not allowed.' })
+  const parsed = feedbackSchema.safeParse(request.body)
+  if (!parsed.success) return void response.status(400).json({ error: 'Check the feedback and try again.' })
+
+  const { requestId, transactionHash, ...values } = parsed.data
+  const db = getFirestore()
+  const payment = await db.collection('verifiedPayments').doc(transactionHash).get()
+  if (!payment.exists || payment.data()?.requestId !== requestId || payment.data()?.status !== 'completed') {
+    return void response.status(403).json({ error: 'Only a completed paid report can submit feedback.' })
+  }
+
+  await db.collection('reportFeedback').doc(transactionHash).set({ requestId, ...values, updatedAt: FieldValue.serverTimestamp() }, { merge: true })
+  response.set('Cache-Control', 'no-store').status(200).json({ saved: true })
 })

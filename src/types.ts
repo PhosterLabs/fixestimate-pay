@@ -1,4 +1,4 @@
-export type RepairCategory = 'plumbing' | 'electrical' | 'hvac' | 'roofing' | 'general'
+export type RepairCategory = 'plumbing' | 'electrical' | 'gas' | 'hvac' | 'roofing' | 'flooring' | 'painting' | 'carpentry' | 'drywall' | 'general'
 export type Urgency = 'routine' | 'soon' | 'urgent'
 
 export interface EstimateRequest {
@@ -6,10 +6,18 @@ export interface EstimateRequest {
   category: RepairCategory
   urgency: Urgency
   description: string
+  details?: Record<string, string>
+  postalPrefix?: string
   imageDataUrl?: string
   walletAddress?: string
   transactionHash?: string
   demo?: boolean
+}
+
+export interface ReportFeedback {
+  helpful?: boolean
+  priceAccuracy?: 'about-right' | 'lower-than-expected' | 'higher-than-expected'
+  resolved?: boolean
 }
 
 export interface EstimateResult {

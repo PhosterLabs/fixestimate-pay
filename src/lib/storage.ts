@@ -23,7 +23,7 @@ export function loadPendingRequest(): EstimateRequest | undefined {
   try {
     const value = JSON.parse(localStorage.getItem(PENDING_KEY) ?? 'null') as Partial<EstimateRequest> | null
     if (!value || typeof value.requestId !== 'string' || typeof value.transactionHash !== 'string' || typeof value.walletAddress !== 'string' || typeof value.description !== 'string') return undefined
-    if (!['plumbing', 'electrical', 'hvac', 'roofing', 'general'].includes(value.category ?? '')) return undefined
+    if (!['plumbing', 'electrical', 'gas', 'hvac', 'roofing', 'flooring', 'painting', 'carpentry', 'drywall', 'general'].includes(value.category ?? '')) return undefined
     if (!['routine', 'soon', 'urgent'].includes(value.urgency ?? '')) return undefined
     return value as EstimateRequest
   } catch {

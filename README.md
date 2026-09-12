@@ -10,6 +10,15 @@ Firebase fallback: https://fixestimate-pay.web.app
 
 Nimiq Pay testnet launch link: https://nimpay.app/miniapps/open/fixestimatepay.phosterlabs.com
 
+## Highlights
+
+- Ten guided repair categories with category-specific follow-up questions
+- On-device photo resizing and compression before consented AI processing
+- Professional-only handling for all electrical and gas reports
+- Optional three-digit ZIP prefix for broad regional cost context
+- Shareable and print-to-PDF reports with locally saved recent history
+- Verified feedback limited to completed paid reports
+
 ## Architecture
 
 1. Nimiq Pay injects the wallet provider.
@@ -17,6 +26,7 @@ Nimiq Pay testnet launch link: https://nimpay.app/miniapps/open/fixestimatepay.p
 3. The HTTPS function verifies recipient, value, reference, confirmation, and single-use status.
 4. Only then does the server call Gemini using a server-side secret.
 5. The browser stores up to 12 report results locally; private keys are never accessible to the app.
+6. Optional feedback is accepted only when it matches a completed paid report.
 
 ## Local setup
 

@@ -9,4 +9,11 @@ describe('createDemoEstimate', () => {
     expect(result.lowEstimate).toBeLessThan(result.highEstimate)
     expect(result.scopeItems.length).toBeGreaterThanOrEqual(4)
   })
+
+  it('keeps gas reports professional-only', () => {
+    const result = createDemoEstimate({ requestId: 'gas-test', category: 'gas', urgency: 'urgent', description: 'There is an unusual odor near the gas furnace.' })
+    expect(result.professionalRequired).toBe(true)
+    expect(result.difficulty).toBe('professional-only')
+    expect(result.repairSteps.join(' ')).toContain('licensed professional')
+  })
 })
