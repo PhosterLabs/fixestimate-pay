@@ -1,0 +1,3 @@
+{
+  "projects": { "default": "YOUR_SEPARATE_FIREBASE_PROJECT_ID" }
+}

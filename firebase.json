@@ -1,0 +1,8 @@
+{
+  "hosting": {
+    "public": "dist",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [{ "source": "/api/estimate", "function": { "functionId": "estimate", "region": "us-east1" } }]
+  },
+  "functions": [{ "source": "functions", "codebase": "default", "ignore": ["node_modules", ".git", "firebase-debug.log", "*.local"] }]
+}
