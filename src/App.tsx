@@ -122,7 +122,7 @@ export default function App() {
     setShowOnboarding(false)
   }
 
-  if (estimate) return <main className="shell"><Header walletLabel={walletLabel} onWallet={handleConnect} busy={busy} /><EstimateResultView key={estimate.id} estimate={estimate} onReset={reset} /></main>
+  if (estimate) return <main className="shell"><Header walletLabel={walletLabel} onWallet={handleConnect} busy={busy} /><EstimateResultView key={estimate.id} estimate={estimate} onReset={reset} /><SiteFooter /></main>
 
   return (
     <main className="shell">
@@ -184,7 +184,7 @@ export default function App() {
       </section>
 
       {history.length > 0 && <section className="history"><button className="history__toggle" onClick={() => setShowHistory(!showHistory)}><span>Recent reports</span><span>{showHistory ? '−' : '+'}</span></button>{showHistory && <div>{history.map((item) => <button key={item.id} onClick={() => setEstimate(item)}><span>{item.title}</span><small>{new Date(item.createdAt).toLocaleDateString()}</small></button>)}</div>}</section>}
-      <footer>Built by Phōstēr Labs · Powered by Nimiq Pay · <a href="/privacy.html">Privacy</a></footer>
+      <SiteFooter />
       {showOnboarding && <div className="onboarding-backdrop" role="presentation">
         <section className="onboarding" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
           <span className="eyebrow">FixEstimate Pay</span>
@@ -204,4 +204,8 @@ export default function App() {
 
 function Header({ walletLabel, onWallet, busy }: { walletLabel: string; onWallet: () => void; busy: boolean }) {
   return <header><a className="brand" href="/" aria-label="FixEstimate Pay home"><BrandMark /><span><strong>FixEstimate</strong><small>PAY</small></span></a><button className="wallet" disabled={busy} onClick={onWallet}><i />{walletLabel}</button></header>
+}
+
+function SiteFooter() {
+  return <footer><a className="studio-link" href="https://phosterlabs.com" target="_blank" rel="noreferrer">A Phōstēr Labs App</a><span> · Powered by Nimiq Pay · </span><a href="/privacy.html">Privacy</a></footer>
 }
