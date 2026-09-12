@@ -20,8 +20,8 @@ Pay per report in NIM. The current testnet price is 0.1 NIM per report.
 
 ## Links
 
-- Live app: https://fixestimate-pay.web.app
-- Nimiq Pay launch link: https://nimpay.app/miniapps/open/fixestimate-pay.web.app
+- Live app: https://fixestimatepay.phosterlabs.com
+- Nimiq Pay launch link: https://nimpay.app/miniapps/open/fixestimatepay.phosterlabs.com
 
 ## Before submission
 

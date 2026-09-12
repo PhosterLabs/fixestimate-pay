@@ -4,11 +4,11 @@ A mobile-first Nimiq Pay Mini App that turns a repair description and optional p
 
 This is an isolated competition companion. It does not contain, import, deploy, or modify the production FixEstimate iOS or Android applications.
 
-Live test deployment: https://fixestimate-pay.web.app
+Live competition app: https://fixestimatepay.phosterlabs.com
 
-Custom competition domain: https://fixestimatepay.phosterlabs.com
+Firebase fallback: https://fixestimate-pay.web.app
 
-Nimiq Pay testnet launch link: https://nimpay.app/miniapps/open/fixestimate-pay.web.app
+Nimiq Pay testnet launch link: https://nimpay.app/miniapps/open/fixestimatepay.phosterlabs.com
 
 ## Architecture
 
