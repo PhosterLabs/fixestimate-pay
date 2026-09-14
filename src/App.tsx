@@ -176,10 +176,25 @@ export default function App() {
           {(['routine', 'soon', 'urgent'] as Urgency[]).map((value) => <button key={value} className={urgency === value ? 'chip chip--selected' : 'chip'} onClick={() => setUrgency(value)}>{value}</button>)}
         </div></fieldset>
 
+        <section className="unlock-preview" aria-labelledby="unlock-preview-title">
+          <div className="unlock-preview__heading">
+            <div><span>Before you pay</span><h3 id="unlock-preview-title">Your personalized report unlocks</h3></div>
+            <strong>{formatNim(config.reportPriceLuna)}</strong>
+          </div>
+          <ul>
+            <li><strong>Cost &amp; safety</strong><span>Estimated repair range and immediate precautions</span></li>
+            <li><strong>Likely repair kit</strong><span>Parts, materials, tools, and equipment</span></li>
+            <li><strong>Clear next steps</strong><span>Guided DIY plan or licensed-professional recommendation</span></li>
+            <li><strong>Contractor handoff</strong><span>Shareable scope and questions to ask</span></li>
+          </ul>
+          <p>Generated from the details you provide. Informational estimate—not a guaranteed quote or diagnosis.</p>
+        </section>
+
         {pendingRequest && <div className="pending" role="status">Payment received. Retry this report without another payment.</div>}
         {error && <div className="error" role="alert">{error}</div>}
-        <button className="button button--primary" disabled={busy || (!pendingRequest && !valid)} onClick={() => void handlePaidEstimate()}>{busy ? 'Working…' : pendingRequest ? 'Retry paid report' : `Unlock report · ${formatNim(config.reportPriceLuna)}`}</button>
+        <button className="button button--primary" disabled={busy || (!pendingRequest && !valid)} onClick={() => void handlePaidEstimate()}>{busy ? 'Working…' : pendingRequest ? 'Retry paid report' : `Unlock my repair report · ${formatNim(config.reportPriceLuna)}`}</button>
         {config.demoEnabled && <button className="button button--text" disabled={busy || !valid} onClick={handleDemo}>Preview a free sample report</button>}
+        <p className="payment-note">One-time payment <span>·</span> No subscription <span>·</span> Approved securely in Nimiq Pay</p>
         <p className="privacy-note">Your wallet approves every payment. FixEstimate Pay never sees your private keys.</p>
       </section>
 
